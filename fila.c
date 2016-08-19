@@ -1,79 +1,58 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct elemento {
-	int dado;
-	struct elemento *prox;
-} elemento;
+//estrutura do nó
+typedef struct {
+	int data;
+	struct Node *next;
+} Node;
 
-typedef struct fila {
-	elemento *inicio;
-	elemento *fim;
-} fila;
-//checa se a fila está vazia ~empty file check
-int emptfck (fila *p_fila)
-{
-	if (p_fila->inicio==NULL)
-		return 1;
-	else
-		return 0;
+//estrutura da fila
+typedef struct{
+	Node *fim;
+} Fila;
+
+//inicia fila
+void startFila(Fila *nomeDaFila){
+	nomeDaFila->fim=NULL;
 }
-//função para criar fila; recebe um ponteiro tipo fila como parametro e atribui valores nulos para o início e o fim
-void cria_fila (fila *p_fila)
-{
-	p_fila->inicio=NULL;
-	p_fila->fim=NULL;
+
+//checa se está vazia
+int emptyCheck(Fila nomeDaFila){
+	if(nomeDaFila.fim==NULL)
+		return 1; //A fila está vazia
+	else return 0;
 }
-//adiciona um elemento na fila
-void push (fila *p_fila, int dado)
-{
-	elemento *pushed;
-	pushed=malloc(sizeof(elemento));
-	pushed->dado=dado;
-	pushed->prox = NULL;
-	
-	if (emptfck(p_fila))
-		p_fila->inicio=pushed;
-	else
-		p_fila->fim->prox=pushed;
-	
-	p_fila->fim = pushed;
-}
-//remove o primeiro elemento da fila; retorna 1 se der certo
-int pop (fila *p_fila, int dado)
-{
-	elemento *poped;
-	
-	if (emptfck(p_fila))
-		return 0;
-	
-	poped = p_fila->inicio;
-	dado = poped->dado;
-	p_fila->inicio = poped->prox;
-	
-	if (p_fila->inicio==NULL)
-		p_fila->fim=NULL;
-	
-	free(poped);
-	return 1;
-}
-//verifica quantos elementos tem na fila
-int fila_tamanho (fila *p_fila)
-{
-	elemento *elem;
-	int count = 0;
-	
-	elem = p_fila->inicio;
-	while (elem != NULL) 
+
+void filaPop(Fila *fila, int dado){
+	Node *temp=fila->fim;//se só tiver um elemento na fila, tem que tratar (segmentation fault)
+	if(temp->next=NULL)
 	{
-		count++;
-		elem = elem->prox;
+		fila->fim=NULL;
+		free(temp);
+		return;
 	}
-	return count;
+	while(temp->next->next!=NULL){
+		temp=tempnext;
+	}//implementa no for
+	free(temp->next);
+	temp->next=NULL;
+}	
+
+void filaPush(Fila *fila, int dado){
+	Node *noh;//criou o apontamento
+	noh=(Node*)malloc(sizeof(Node));//cria a estrutura a partir do endereço
+	noh.data=dado; 
+	if (emptyCheck(fila)==1){
+		fila->fim=&noh;
+	}else{
+		noh->next=fila->fim;
+		fila->fim=noh;
+	}
 }
 
-int main(int argc, char **argv)
-{
+int main(argc, argv){
+	
 	
 	return 0;
 }
