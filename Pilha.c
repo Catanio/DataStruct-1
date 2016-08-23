@@ -24,7 +24,7 @@ int emptyCheck(Pilha *nomeDaPilha){
 	else return 0;
 }
 
-void Push(Pilha *pilha, int dado){
+void push(Pilha *pilha, int dado){
 	Node *noh=(Node*)malloc(sizeof(Node));//criou o apontamento
 	noh->data=dado; 
 	if (emptyCheck(pilha)==1){
@@ -36,7 +36,7 @@ void Push(Pilha *pilha, int dado){
 }
 
 
-int Pop(Pilha *pilha){
+int pop(Pilha *pilha){
 	Node *temp=pilha->head;
 	if(!emptyCheck(pilha)){
 		int dado=temp->data;
@@ -44,14 +44,42 @@ int Pop(Pilha *pilha){
 		free(temp);
 		return dado;
 	}
-	else{
-		printf("a pilha está vazia! o retorno é 0");
-		return 0;
-	}
-}	
+	else return 0;
 
+}	
+void menu(){
+	printf("1 - inicia Pilha\n");
+	printf("2 - push na Pilha\n");
+	printf("3 - pop na Pilha\n");
+	printf("5 - mostra a pilha\n");
+}
 
 int main(argc, argv){
 	
+	Pilha pilha;
+	int exit, op, data;
+	printf("digite um comando invalido para sair\n");
+	do{	
+	menu();
+	exit=scanf("%d", &op);
+	if (op==1){
+		startPilha(&pilha);
+	}
+	else if(op==2){
+		printf("qual número botar na pilha? ");
+		scanf("%d", &data);
+		push(&pilha, data);
+	}
+	else if(op==3){
+		if (emptyCheck(&pilha))
+			printf("pilha vazia!\n");
+		else
+			printf("%d tirado da pilha!\n", pop(&pilha));
+	}
+	else if(op==4){
+		printf("ainda não implementado!\n");
+	}
+
+	}while(exit || op >4 || op<1);
 	return 0;
 }
