@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -36,8 +37,9 @@ void filaPush(Fila *fila, int dado){
 }
 
 
-void filaPop(Fila *fila, int dado){
+int filaPop(Fila *fila){
 	Node *temp=fila->fim, *ant;//se só tiver um elemento na fila, tem que tratar (segmentation fault)
+	int dado;
 	if(temp->next=NULL)
 	{
 		fila->fim=NULL;
@@ -48,9 +50,11 @@ void filaPop(Fila *fila, int dado){
 		ant=temp;		
 		temp=temp->next;
 	}//implementa no for
-	
+	dado=temp->data;
 	free(temp);
 	ant->next=NULL;
+	
+	return dado;
 }	
 
 
