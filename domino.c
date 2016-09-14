@@ -27,7 +27,7 @@ int contaLista (Node *lista) {
 
 void desenhaMao (Node *mao) {
 	int i, j, count, qtd;
-	qtd = 1;//contaLista(mao)//desenha no maximo 18
+	qtd = 5;//contaLista(mao)//desenha no maximo 18
 
 //2,3,4- j (left), 6,7,8 - (right)
 	for(i=0 ; i <=4 ; i++) {
@@ -37,41 +37,8 @@ void desenhaMao (Node *mao) {
 					printf("-");
 				else if ( (i == 1 || i == 2 || i == 3) && (j == 0 || j == 4 || j == 8) )
 					printf("|");
-				//else printf(" ");
+				else printf(" ");
 
-				//Desenha as bolinhas primeira linha
-				if ( (i == 1) ) {
-					if ( j == 1) {
-						if ( domino[count-1]->numberLeft > 1 && domino[count-1]->numberLeft < 7 )
-							printf("o");
-						else printf(" ");
-					}
-
-					else if ( j == 3 ) {
-						if ( domino[count-1]->numberLeft > 3 && domino[count-1]->numberLeft < 7 )
-							printf("o");
-						else printf(" ");
-					}
-					if ( j == 5) {
-						if ( domino[count-1]->numberLeft > 1 && domino[count-1]->numberLeft < 7 )
-							printf("o");
-						else printf(" ");
-					}
-
-					else if ( j == 7 ) {
-						if ( domino[count-1]->numberLeft > 3 && domino[count-1]->numberLeft < 7 )
-							printf("o");
-						else printf(" ");
-					}
-				}
-				//segunda linha
-				else if ( (i == 2) ) {
-
-				}
-				//terceira linha
-				else if ( (i == 3) ) {
-
-				}
 			}
 		}
 		if(count < qtd && count != 18)//como o max por lin
@@ -80,13 +47,14 @@ void desenhaMao (Node *mao) {
 			printf("\n");
 	}
 }
-
+/*
 if ( (domino[count-1]->numberLeft > 1 && domino[count-1]->numberLeft < 7) || if ( domino[count-1]->numberRight > 1 && domino[count-1]->numberRight < 7 )){
 	if (j == 1 || j == 3 || j == 5 || j == 7)
 		printf("o");
 }
 else ( j>0 && j<8 || j!=4 ) 
 	printf(" ");
+*/
 
 
 //Checa se vazio; Caso sim retorna 1
@@ -122,7 +90,6 @@ Node *pop(Node *pilha) {
 	}
 }
 
-
 //Função que inicia o "deck" de peças de dominó
 Node *criaPecas () {
 	int i, j;
@@ -137,7 +104,8 @@ Node *criaPecas () {
 	return domino;
 }
 //função que embaralha as peças
-
+Node *pesca(Node *pecas) {
+}
 //função que distribui as peças
 	
 //funcao que mostra a mao
