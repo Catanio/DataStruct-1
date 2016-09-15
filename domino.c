@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-//push tá dando problema
+
 
 struct Node{
 	int numberLeft;
@@ -32,6 +32,7 @@ int contaLista (Node *lista) {
 	}
 }
 
+//NOTK
 void desenhaMao (Node *mao) {
 	int i, j, count, qtd;
 	qtd = 10;//contaLista(mao)//desenha no maximo 18
@@ -63,7 +64,7 @@ else ( j>0 && j<8 || j!=4 )
 	printf(" ");
 */
 
-
+//OK
 //Checa se vazio; Caso sim retorna 1
 int emptyCheck(Node *node){
 	if (node == NULL )
@@ -82,19 +83,9 @@ Node *push (Node *pilha, int left, int right){
 	if (pilha == NULL)
 		return noh;
 	else {
+		pilha->left = noh;
 		noh->right = pilha;
-		return noh;
-	}
-}
-
-Node *pop(Node *pilha) {
-	Node *noh;
-
-	if(emptyCheck(pilha))
-		return NULL;
-	else {
-		noh = pilha->right;
-		free(pilha);
+		noh->left = NULL;
 		return noh;
 	}
 }
@@ -120,6 +111,7 @@ void limpaLista (Node *temp) {
 	while (temp->right != NULL) {
 		anterior=temp;
 		temp=temp->right;
+		anterior=NULL;
 		free(anterior);
 	}
 	free(temp);
@@ -127,7 +119,7 @@ void limpaLista (Node *temp) {
 }
 
 //função to array
-//AE CARALHO TA OK
+//AE CARALHO FUNCIONANDO ITS ALIVE ITS ALIVE ITS ALIVE
 Node *toArray(Node *noh, int *quantidade) {
 	Node *pecas, *temp=noh;
 	int i=0, gambiarra;
@@ -168,10 +160,16 @@ Node *embaralha(Node *pecas) {
 			count++;
 		}
 	}
+
+	pecas=NULL;
+	for (i=0; i<28; i++) {
+		pecas=push(pecas,vBaralho[i].numberLeft, vBaralho[i].numberRight);
+	}
 	//ao final dele, espera-se que haja um vetor (vBaralho) com dominós aleatoriamente
-	return vBaralho;
+	return pecas;
 
 }
+
 //função que distribui as peças
 	
 //funcao que mostra a mao
@@ -179,17 +177,31 @@ Node *embaralha(Node *pecas) {
 Node *playerHand=NULL, *machineHand=NULL, *board=NULL;
 int main() {
 	//Node *noh = (Node *) malloc (sizeof(Node));
-	Node *pecas=NULL, *um, *dois;
-	int i=0;	
-
+	Node *pecas=NULL;
+	int i=0;
 
 
 
 	pecas=criaPecas();
+	Node *temp = pecas;
+	i=contaLista(pecas);
+	printf("quantidade: %d\n", i);
+	while(temp->right!=NULL) {
+		printf("(%d~%d)", temp->numberLeft, temp->numberRight);
+		temp=temp->right;
+	}
+	printf("(%d~%d)\n", temp->numberLeft, temp->numberRight);
+
+	printf("depois de embaralhar: \n");
 	pecas=embaralha(pecas);
-	printf("(%d,%d~%d)\n", i, pecas[i].numberLeft, pecas[i].numberRight);
-
-
+	i=contaLista(pecas);
+	printf("quantidade: %d\n", i);
+	temp=pecas;
+	while(temp->right!=NULL) {
+		printf("(%d~%d)", temp->numberLeft, temp->numberRight);
+			temp=temp->right;
+	}
+	printf("(%d~%d)\n", temp->numberLeft, temp->numberRight);
 
 
 	return 0;
