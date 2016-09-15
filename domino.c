@@ -13,6 +13,9 @@ struct Node{
 	//Caso contrário, funciona normalmente como lista duplamente encadeada
 } typedef Node;
 
+
+//Ok!
+//usada na função toArray e desenhaMao
 int contaLista (Node *lista) {
 	Node *temp = lista;
 	int count = 1;
@@ -69,12 +72,14 @@ int emptyCheck(Node *node){
 }
 
 //Estruturas de Pilha
+//OK! (checked)
+//usado em "criaPecas"
 Node *push (Node *pilha, int left, int right){
 	Node *noh = (Node *) malloc (sizeof(Node));
 	noh->numberLeft = left;
 	noh->numberRight = right;
 
-	if (emptyCheck(pilha))
+	if (pilha == NULL)
 		return noh;
 	else {
 		noh->right = pilha;
@@ -94,6 +99,7 @@ Node *pop(Node *pilha) {
 	}
 }
 
+//OK!
 //Função que inicia o "deck" de peças de dominó
 Node *criaPecas () {
 	int i, j;
@@ -101,17 +107,17 @@ Node *criaPecas () {
 	Node *domino = NULL;
 
 	for (i=0; i<=6; i++){
-		for (j=0; j<=6; j++) {
+		for (j=i; j<=6; j++) {
 			domino = push(domino, i, j);
 		}
 	}
 	return domino;
 }
-
-void limpaLista (Node *lista) {
-	Node *temp=lista, *anterior=NULL;
+//É pra estar OK..
+void limpaLista (Node *temp) {
+	Node *anterior=NULL;
 	
-	while (temp->right != NULL && temp != NULL) {
+	while (temp->right != NULL) {
 		anterior=temp;
 		temp=temp->right;
 		free(anterior);
@@ -121,16 +127,25 @@ void limpaLista (Node *lista) {
 }
 
 //função to array
+//Não OK
 Node *toArray(Node *noh, int *quantidade) {
-	Node *pecas, *temp;
-	int i=0;
+	Node *pecas, *temp=noh;
+	int i=0, gambiarra;
 
-	*quantidade = contaLista(noh);
-	pecas=(Node *) malloc (*quantidade*sizeof (Node));
+	*quantidade = contaLista(temp);//tá chow
+	gambiarra=contaLista(temp);
+	if (quantidade == 0)
+		return NULL;
+
+
+	pecas=(Node *) malloc (gambiarra * sizeof (Node));
+	
 	while (temp->right != NULL ) {
 		pecas[i]=*temp;
 		temp=temp->right;
+		i++;
 	}
+	pecas[i]=*temp;
 	return pecas;
 }
 
@@ -145,7 +160,7 @@ Node *embaralha(Node *pecas) {
 
 	// esse while vai distribuir do vetor ordenado para um vetor aleatório
 	while (count <28) {
-		ri = rand()%27;
+		ri = rand()%28;
 		if (vPecas[ri].numberRight != -1) {
 			vBaralho[count]=vPecas[ri];
 			vPecas[ri].numberRight=-1;
@@ -162,34 +177,20 @@ Node *embaralha(Node *pecas) {
 
 Node *playerHand=NULL, *machineHand=NULL, *board=NULL;
 int main() {
-	Node *noh = (Node *) malloc (sizeof(Node));
-	Node *Pecas, *pecas;
-	int i;	
+	//Node *noh = (Node *) malloc (sizeof(Node));
+	Node *pecas=NULL, *um, *dois;
+	int i=1,count;	
 
 
-	desenhaMao(noh);
 
-	push(pecas, 1, 2);
-	printf("%d,%d~", pecas->numberRight, pecas->numberLeft);
 
-	Pecas=criaPecas();
-	printf("1bip\n");
-	
-	i=contaLista(Pecas);
-	printf("1bip\n");
-	printf("%d", i);
-	
-	
-	pecas=toArray(Pecas, &i);
-	
+	pecas=criaPecas();
+	pecas=toArray(pecas, &count);
+	printf("bip?");
+	printf("(%d,%d~%d)\n",count, pecas[i].numberLeft, pecas[i].numberRight);
 
-	for (i=0; i< 28; i++) {
-		printf("%d,%d~", pecas[i].numberLeft, pecas[i].numberRight);
-	}
-			printf("4bip\n");
-	pecas=embaralha(Pecas);
-	/*	printf("bip\n");
-	*/
+
+
 
 	return 0;
 }
