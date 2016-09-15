@@ -83,8 +83,9 @@ Node *push (Node *pilha, int left, int right){
 	if (pilha == NULL) {
 		noh->right=NULL;
 		noh->left=NULL;
-	}
 		return noh;
+	}
+
 	else {
 		pilha->left = noh;
 		noh->right = pilha;
