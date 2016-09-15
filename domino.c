@@ -127,7 +127,7 @@ void limpaLista (Node *temp) {
 }
 
 //função to array
-//Não OK
+//AE CARALHO TA OK
 Node *toArray(Node *noh, int *quantidade) {
 	Node *pecas, *temp=noh;
 	int i=0, gambiarra;
@@ -139,7 +139,7 @@ Node *toArray(Node *noh, int *quantidade) {
 
 
 	pecas=(Node *) malloc (gambiarra * sizeof (Node));
-	
+
 	while (temp->right != NULL ) {
 		pecas[i]=*temp;
 		temp=temp->right;
@@ -150,6 +150,7 @@ Node *toArray(Node *noh, int *quantidade) {
 }
 
 //função que embaralha as peças
+//quase OK, falta transformar o array em LISTA
 Node *embaralha(Node *pecas) {
 	srand( (unsigned)time(NULL));
 	Node *vPecas, *vBaralho=(Node *)malloc(28*(sizeof(Node)));
@@ -179,15 +180,14 @@ Node *playerHand=NULL, *machineHand=NULL, *board=NULL;
 int main() {
 	//Node *noh = (Node *) malloc (sizeof(Node));
 	Node *pecas=NULL, *um, *dois;
-	int i=1,count;	
+	int i=0;	
 
 
 
 
 	pecas=criaPecas();
-	pecas=toArray(pecas, &count);
-	printf("bip?");
-	printf("(%d,%d~%d)\n",count, pecas[i].numberLeft, pecas[i].numberRight);
+	pecas=embaralha(pecas);
+	printf("(%d,%d~%d)\n", i, pecas[i].numberLeft, pecas[i].numberRight);
 
 
 
