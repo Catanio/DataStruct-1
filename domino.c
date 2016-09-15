@@ -80,7 +80,10 @@ Node *push (Node *pilha, int left, int right){
 	noh->numberLeft = left;
 	noh->numberRight = right;
 
-	if (pilha == NULL)
+	if (pilha == NULL) {
+		noh->right=NULL;
+		noh->left=NULL;
+	}
 		return noh;
 	else {
 		pilha->left = noh;
