@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
+//push tá dando problema
 
 struct Node{
 	int numberLeft;
@@ -19,12 +19,14 @@ int contaLista (Node *lista) {
 
 	if (lista == NULL)
 		return 0;
+	else {
 
-	while (temp->right != NULL) {
-		temp=temp->right;
-		count++;
+		while (temp->right != NULL) {
+			temp=temp->right;
+			count++;
+		}
+		return count;
 	}
-	return count;
 }
 
 void desenhaMao (Node *mao) {
@@ -162,13 +164,25 @@ Node *playerHand=NULL, *machineHand=NULL, *board=NULL;
 int main() {
 	Node *noh = (Node *) malloc (sizeof(Node));
 	Node *Pecas, *pecas;
-	int i;	printf("1bip\n");
+	int i;	
+
+
 	desenhaMao(noh);
 
-	printf("2bip\n");
+	push(pecas, 1, 2);
+	printf("%d,%d~", pecas->numberRight, pecas->numberLeft);
+
 	Pecas=criaPecas();
-		printf("3bip\n");
+	printf("1bip\n");
+	
+	i=contaLista(Pecas);
+	printf("1bip\n");
+	printf("%d", i);
+	
+	
 	pecas=toArray(Pecas, &i);
+	
+
 	for (i=0; i< 28; i++) {
 		printf("%d,%d~", pecas[i].numberLeft, pecas[i].numberRight);
 	}
