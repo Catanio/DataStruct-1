@@ -11,12 +11,13 @@ struct Node{
 	struct Node *right;
 } typedef Node;
 
-//variáveis globais
+//variáveis globais - #proxima implementação poderá contar com ponteiros para ponteiros
+//Foram selecionadas as variaveis globais por desconhecimento da utilidade de ponteiro para ponteiro
+//Neste cenário, não seria possível fazer dois retornos por função (havia sido pensada uma função "pull")
+	//qual iria retirar um nó de uma lista e retornar em outra - tendo que atualizar os dois endereços.
 Node *playerHand=NULL, *machineHand=NULL, *mesa=NULL, *monte=NULL;
 
-
-//Ok!
-//usada na função toArray e desenhaMao
+//Função que conta quantos elementos há em uma lista
 int contaLista (Node *lista) {
 	Node *temp = lista;
 	int count = 1;
@@ -33,46 +34,10 @@ int contaLista (Node *lista) {
 	}
 }
 
-//NOTK
-void desenhaMao (Node *mao) {
-	int i, j, count, qtd;
-	qtd = 10;//contaLista(mao)//desenha no maximo 18
-
-//2,3,4- j (left), 6,7,8 - (right)
-	for(i=0 ; i <=4 ; i++) {
-		for (count = 1; count <= qtd ; count ++) {
-			for (j = 0; j<= 8 ; j++ ) {
-				if( ( i==0 || i==4 ) && j != 0 && j != 8 )
-					printf("-");
-				else if ( (i == 1 || i == 2 || i == 3) && (j == 0 || j == 4 || j == 8) )
-					printf("|");
-				else printf(" ");//substituir por impressão de peças
-
-			}
-		}
-		if(count <= qtd )//falta arrumar o condicional pra pular a linha
-			printf(":");
-		else
-			printf("\n");
-	}
-}
-/*
-if ( (domino[count-1]->numberLeft > 1 && domino[count-1]->numberLeft < 7) || if ( domino[count-1]->numberRight > 1 && domino[count-1]->numberRight < 7 )){
-	if (j == 1 || j == 3 || j == 5 || j == 7)
-		printf("o");
-}
-else ( j>0 && j<8 || j!=4 ) 
-	printf(" ");
-*/
-
-//OK
-//Checa se vazio; Caso sim retorna 1
 
 
-//Estruturas de Pilha
-//OK! (checked)
 //usado em "criaPecas"
-Node *push (Node *pilha, int left, int right){
+Node *insereInicio (Node *pilha, int left, int right){
 	Node *noh = (Node *) malloc (sizeof(Node));
 	noh->numberLeft = left;
 	noh->numberRight = right;
@@ -92,7 +57,6 @@ Node *push (Node *pilha, int left, int right){
 	}
 }
 
-//OK!
 //Função que inicia o "deck" de peças de dominó
 Node *criaPecas () {
 	int i, j;
@@ -101,12 +65,13 @@ Node *criaPecas () {
 
 	for (i=0; i<=6; i++){
 		for (j=i; j<=6; j++) {
-			domino = push(domino, i, j);
+			domino = insereInicio(domino, i, j);
 		}
 	}
 	return domino;
 }
-//É pra estar OK..
+
+//função que limpa a lista por completo
 void limpaLista (Node *temp) {
 	Node *anterior=NULL;
 	
@@ -120,19 +85,20 @@ void limpaLista (Node *temp) {
 
 }
 
-//função to array
-//AE CARALHO FUNCIONANDO ITS ALIVE ITS ALIVE ITS ALIVE
+//Função que copia uma lista duplamente encadeada para um array
+//recebe o cabeçalho da lista e o endereço onde vai ser armazenada a quantidade de elementos
+	//e retorna o cabeçalho do array
 Node *toArray(Node *noh, int *quantidade) {
 	Node *pecas, *temp=noh;
-	int i=0, gambiarra;
+	int i=0, tamanhoDaLista;
 
-	*quantidade = contaLista(temp);//tá chow
-	gambiarra=contaLista(temp);
+	*quantidade = contaLista(temp);
+	tamanhoDaLista=contaLista(temp);
 	if (quantidade == 0)
 		return NULL;
 
 
-	pecas=(Node *) malloc (gambiarra * sizeof (Node));
+	pecas=(Node *) malloc (tamanhoDaLista * sizeof (Node));
 
 	while (temp->right != NULL ) {
 		pecas[i]=*temp;
@@ -144,7 +110,7 @@ Node *toArray(Node *noh, int *quantidade) {
 }
 
 //função que embaralha as peças
-//
+//recebe o cabeçalho da lista e retorna ela atualizada
 Node *embaralha(Node *pecas) {
 	srand( (unsigned)time(NULL));
 	Node *vPecas, *vBaralho=(Node *)malloc(28*(sizeof(Node)));
@@ -165,12 +131,28 @@ Node *embaralha(Node *pecas) {
 
 	pecas=NULL;//inicializa pecas
 	for (i=0; i<28; i++) {
-		pecas=push(pecas,vBaralho[i].numberLeft, vBaralho[i].numberRight);
+		pecas=insereInicio(pecas,vBaralho[i].numberLeft, vBaralho[i].numberRight);
 	}
 	return pecas;
 }
-//função pesca
+//função que pesca uma peça do monte de dominós
+//recebe a lista que vai receber a peça do monte
+Node *pescaDoMonte (Node *noh) {
+	if (monte==NULL){
+		printf("Não Existem peças para pescar!\n");
+		return noh;
+	}
 
+	Node *aux=monte;
+	monte=monte->right;
+	if(monte!=NULL)
+		monte->left=NULL;
+	noh->left = aux;
+	aux->right=noh;
+
+	return aux;
+
+}
 //função que distribui as peças, seis para o jogador, seis para a máquina e um para a mesa.
 //recebe um deck embaralhado e retorna o resto do deck, depois de distribuir
 Node *distribui(Node *pecas) {
@@ -178,14 +160,14 @@ Node *distribui(Node *pecas) {
 
 		//distribui para mão do jogador
 		for (i=0; i<=6; i++) {
-			playerHand=push(playerHand, pecas->numberLeft, pecas->numberRight);
+			playerHand=insereInicio(playerHand, pecas->numberLeft, pecas->numberRight);
 			pecas=pecas->right;
 			free(pecas->left);
 			pecas->left=NULL;
 		}
 		//distribui para a mão da maquina
 		for (i=0; i<=6; i++) {
-			machineHand=push(machineHand, pecas->numberLeft, pecas->numberRight);
+			machineHand=insereInicio(machineHand, pecas->numberLeft, pecas->numberRight);
 			pecas=pecas->right;
 			free(pecas->left);
 			pecas->left=NULL;
@@ -264,8 +246,6 @@ int primeiraJogada() {
 
 }
 
-// 0 = máquina, 1 = jogador; rodada while com inversão de i ao final
-
 void imprimePecas(Node *pecas) {
 	Node *temp = pecas;
 		while(temp!=NULL) {
@@ -275,6 +255,30 @@ void imprimePecas(Node *pecas) {
 	printf("\n");
 }
 
+void jogando(){
+	Node *temp=mesa;
+	int primeiroNumero=temp->numberLeft, ultimoNumero, jogaOuPesca;//joga = 1, pesca = 0;
+
+	//Salva os dois números das extremidades da lista de dominós na mesa.
+	while (temp!=NULL){
+		ultimoNumero=temp->numberRight;
+		temp=temp->right;
+	}
+
+	do{
+		for(temp=playerHand; temp!=NULL; temp=temp->right){
+			if(temp->numberLeft == primeiroNumero || temp->numberRight == primeiroNumero || temp->numberLeft == ultimoNumero || temp->numberRight == ultimoNumero){
+				jogaOuPesca=1;
+				break;
+			}
+			else jogaOuPesca = 0;
+		}
+	} while (pesca == 0);
+	imprimePecas(playerHand);
+	printf("fazer o que? :");
+	scanf("%d", &jogada);
+}
+
 int main() {
 	Node *pecas=NULL;
 	int joga;
@@ -282,20 +286,35 @@ int main() {
 	inicializa();
 	joga=primeiraJogada();
 
+	//1 = maquina joga; 0 = Player joga
 	do{
-		
-		if (joga==0){
-			joga!=
+		system("clear");
+		imprimePecas(mesa);
+		if (joga == 0){
+
+			if(contaLista(playerHand)==0){
+				system("clear");
+				printf("\nVocê Ganhou!");
+				break;
+			}
+			else joga=1;
+			//jogando();
 		}
-		//maquina joga
 
-		else if (joga == 1)
-		// humano joga
 
-		//se humano ganha, == 3
+		else if (joga == 1){
+			
+			if(contaLista(machineHand)==0){
+				
+			}
+			else joga = 0;
+			//AI();
+		}
 
-		//se máquina ganha, == 2
-	} while (joga <=1);
+	} while (1);
+
+	system("clear");
+
 
 	printf("pecas da mão: %d: ", contaLista(playerHand));
 	imprimePecas(playerHand);
