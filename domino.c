@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
+//#include <stdbool.h>
 
 struct Node{
   int numberLeft;
@@ -9,9 +9,10 @@ struct Node{
 
   struct Node *left;
   struct Node *right;
-  //O right é usado como "next" em caso de implementação de estrutura em pilhas
-  //Caso contrário, funciona normalmente como lista duplamente encadeada
 } typedef Node;
+
+//variáveis globais
+Node *playerHand=NULL, *machineHand=NULL, *mesa=NULL, *monte=NULL;
 
 
 //Ok!
@@ -143,7 +144,7 @@ Node *toArray(Node *noh, int *quantidade) {
 }
 
 //função que embaralha as peças
-//quase OK, falta transformar o array em LISTA
+//
 Node *embaralha(Node *pecas) {
   srand( (unsigned)time(NULL));
   Node *vPecas, *vBaralho=(Node *)malloc(28*(sizeof(Node)));
@@ -166,76 +167,111 @@ Node *embaralha(Node *pecas) {
   for (i=0; i<28; i++) {
     pecas=push(pecas,vBaralho[i].numberLeft, vBaralho[i].numberRight);
   }
-
+  return pecas;
 }
 //função pesca
 
 //função que distribui as peças, seis para o jogador, seis para a máquina e um para a mesa.
+//recebe um deck embaralhado e retorna o resto do deck, depois de distribuir
 Node *distribui(Node *pecas) {
     int i;
 
     //distribui para mão do jogador
     for (i=0; i<=6; i++) {
-      playerHand=push(pecas, pecas->numberLeft, pecas->numberRight);
+      playerHand=push(playerHand, pecas->numberLeft, pecas->numberRight);
       pecas=pecas->right;
       free(pecas->left);
       pecas->left=NULL;
     }
     //distribui para a mão da maquina
     for (i=0; i<=6; i++) {
-      machineHand=push(pecas, pecas->numberLeft, pecas->numberRight);
+      machineHand=push(machineHand, pecas->numberLeft, pecas->numberRight);
       pecas=pecas->right;
       free(pecas->left);
       pecas->left=NULL;
     }
-    board=push(pecas, pecas->numberLeft, pecas->numberRight);
-    pecas=pecas->right;
-    free(pecas->left);
-    pecas->left=NULL;
 
     return pecas;
 }
 //funcao que mostra a mao
 
 //inicializa
-Node *inicializa (Node *pecas) {
-  Node *pecas;
+//ITS ALIVE
+void inicializa () {
+  Node *pecas=NULL;
   pecas=criaPecas();
-  embaralha(pecas);
-  pecas=distribui(pecas);
-  
-  return pecas;
+  pecas=embaralha(pecas);
+  monte=distribui(pecas);
+
 }
 
-Node *playerHand=NULL, *machineHand=NULL, *board=NULL;
-int main() {
-  //Node *noh = (Node *) malloc (sizeof(Node));
-  Node *pecas=NULL;
-  int i=0;
+//checa se há peças a serem jogadas.
 
+//quem é o primeiro a jogar?
+/*Inicia o jogo quem tiver o duplo-6 (peça com o numero 6 nas suas duas metades)
+ Caso esta peça não tenha sido entregue a nenhum jogador, iniciará aquele que tiver a peça dupla maior*/
+int primeiraJogada() {
+  Node *temp;
+  int maiorDuplaPlayer=0, maiorDuplaMaquina=0;
 
-
-  pecas=criaPecas();
-  Node *temp = pecas;
-  i=contaLista(pecas);
-  printf("quantidade: %d\n", i);
-  while(temp->right!=NULL) {
-    printf("(%d~%d)", temp->numberLeft, temp->numberRight);
-    temp=temp->right;
+  for (temp=playerHand;temp!=NULL; temp=temp->right){
+    if (temp->numberLeft == temp->numberRight)
+     maiorDuplaPlayer = temp->numberLeft;
+    if(temp->numberLeft==6 && temp->numberRight==6)
+      return 1;
   }
-  printf("(%d~%d)\n", temp->numberLeft, temp->numberRight);
 
-  printf("depois de embaralhar: \n");
-  pecas=embaralha(pecas);
-  i=contaLista(pecas);
-  printf("quantidade: %d\n", i);
-  temp=pecas;
-  while(temp->right!=NULL) {
+  for (temp=machineHand;temp!=NULL; temp=temp->right){
+    if (temp->numberLeft == temp->numberRight)
+     maiorDuplaMaquina = temp->numberLeft;
+    if(temp->numberLeft==6 && temp->numberRight==6)
+      return 0;
+  }
+  if (maiorDuplaMaquina>maiorDuplaPlayer)
+    return 0;
+  else return 1;
+
+}
+
+// 0 = máquina, 1 = jogador; rodada while com inversão de i ao final
+
+void imprimePecas(Node *pecas) {
+  Node *temp = pecas;
+    while(temp!=NULL) {
     printf("(%d~%d)", temp->numberLeft, temp->numberRight);
       temp=temp->right;
   }
-  printf("(%d~%d)\n", temp->numberLeft, temp->numberRight);
+  printf("\n");
+}
+
+int main() {
+  Node *pecas=NULL;
+  int i=0;
+
+  inicializa();
+  comecaJogo();
+
+do{
+  
+  if (joga==0)
+  //maquina joga
+
+  else if (joga == 1)
+  // humano joga
+
+  //se humano ganha, == 3
+
+  //se máquina ganha, == 2
+} while (joga <=1);
 
 
+  imprimePecas(playerHand);
+  printf("\npecas da mão: %d\n", contaLista(playerHand));
+  imprimePecas(machineHand);
+  printf("\n\npecas da maquina %d\n", contaLista(machineHand));
+  imprimePecas(monte);
+  printf("\n\npecas da mesa: %d\n", contaLista(monte));
+ 
+ 
   return 0;
 }
