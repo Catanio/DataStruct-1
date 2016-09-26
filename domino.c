@@ -136,7 +136,7 @@ Node *embaralha(Node *pecas) {
 	return pecas;
 }
 //função que pesca uma peça do monte de dominós
-//recebe a lista que vai receber a peça do monte
+//recebe a lista que vai receber a peça do monte e retorna o novo endereço
 Node *pescaDoMonte (Node *noh) {
 	if (monte==NULL){
 		printf("Não Existem peças para pescar!\n");
@@ -255,29 +255,62 @@ void imprimePecas(Node *pecas) {
 	printf("\n");
 }
 
+void imprimeTela (){
+	int i;
+	system("clear");
+	printf("peças da mesa: "); imprimePecas(mesa);
+	printf("peças da mão: "); imprimePecas(playerHand);printf("              ");
+	for(i=1; i<=contaLista(playerHand); i++)
+		if(i<10)printf(" [%d] ", i);else printf(" [%d]  ", i);
+	printf("\n//////////////////////\n/  escolha uma peça  /\n//////////////////////\n");
+}
+
 void jogando(){
 	Node *temp=mesa;
-	int primeiroNumero=temp->numberLeft, ultimoNumero, jogaOuPesca;//joga = 1, pesca = 0;
+	int valida=0,primeiroNumero=temp->numberLeft, ultimoNumero,jogada, jogaOuPesca=0, i;//joga = 1, pesca = 0;
 
 	//Salva os dois números das extremidades da lista de dominós na mesa.
 	while (temp!=NULL){
 		ultimoNumero=temp->numberRight;
 		temp=temp->right;
 	}
+	imprimeTela();
 
 	do{
+		//percorre a lista e verifica se há peça
 		for(temp=playerHand; temp!=NULL; temp=temp->right){
 			if(temp->numberLeft == primeiroNumero || temp->numberRight == primeiroNumero || temp->numberLeft == ultimoNumero || temp->numberRight == ultimoNumero){
 				jogaOuPesca=1;
 				break;
 			}
-			else jogaOuPesca = 0;
+
+			if (jogaOuPesca == 1)
+				break;
+			else {
+			//caso não haja peça, pesca
+				playerHand=pescaDoMonte(playerHand);
+				imprimeTela();
+				printf("peça(s) pescada(s) por falta de jogadas possíveis!\n");
+			}
 		}
-	} while (pesca == 0);
-	imprimePecas(playerHand);
-	printf("fazer o que? :");
-	scanf("%d", &jogada);
+	} while (jogaOuPesca == 0);
+
+
+	do{
+		scanf("%d", &jogada);
+		if(jogada <= contaLista(playerHand))
+			valida=1;
+		else {
+			imprimeTela();
+			printf("Jogada inválida! Escolha outra peça: \n");
+		}
+	} while (!valida);
+
+	for (i=0, temp = playerHand; i<contaLista(playerHand); temp=temp->right, i++){
+	}
+
 }
+
 
 int main() {
 	Node *pecas=NULL;
@@ -289,7 +322,6 @@ int main() {
 	//1 = maquina joga; 0 = Player joga
 	do{
 		system("clear");
-		imprimePecas(mesa);
 		if (joga == 0){
 
 			if(contaLista(playerHand)==0){
@@ -298,33 +330,21 @@ int main() {
 				break;
 			}
 			else joga=1;
-			//jogando();
+			jogando();
 		}
 
 
 		else if (joga == 1){
 			
 			if(contaLista(machineHand)==0){
-				
+				system("clear");
+				printf("você perdeu!");
 			}
 			else joga = 0;
 			//AI();
 		}
 
 	} while (1);
-
-	system("clear");
-
-
-	printf("pecas da mão: %d: ", contaLista(playerHand));
-	imprimePecas(playerHand);
-	printf("\n\npecas da maquina: %d: ", contaLista(machineHand));
-	imprimePecas(machineHand);
-	printf("\n\npecas do monte: %d: ", contaLista(monte));
-	imprimePecas(monte);
-	printf("\n\npecas da mesa: %d: ", contaLista(mesa));
-	imprimePecas(mesa);
-	
  
  
 	return 0;
