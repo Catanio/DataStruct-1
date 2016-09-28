@@ -420,6 +420,81 @@ int jogando(){
   } while (1);
   return 1;
 }
+int AI (){
+    Node *temp=mesa;
+  int auxI, auxII ,primeiroNumero, ultimoNumero;
+  //Salva os dois números das extremidades da lista de dominós na mesa.
+  primeiroNumero=temp->numberLeft;
+  for (temp=mesa; temp!=NULL; temp=temp->right)
+    ultimoNumero=temp->numberRight;
+
+//Verifica se existe uma peça compativel para a jogada. A peça correspondente para
+  for(temp=machineHand; temp!=NULL; temp=temp->right) {
+    if(temp->numberLeft == primeiroNumero || temp->numberRight == primeiroNumero || temp->numberLeft == ultimoNumero || temp->numberRight == ultimoNumero)
+      break;
+
+  }
+  //se não tiver a peça, pesca e retorna para o outro jogador jogar;
+  if(temp == NULL) {
+    machineHand=pescaDoMonte(machineHand);
+        return 0;
+    }
+
+//essa parte faz os reaponteiramentos para dar um "pull" de uma lista pra outra.
+  if (temp->left == NULL && temp->right == NULL){
+    machineHand=NULL;
+    temp->left=NULL;
+    temp->right=NULL;
+  }
+  else if (temp->left == NULL ){
+    machineHand=machineHand->right;
+    machineHand->left = NULL;
+    temp->right=NULL;
+  }
+  else if (temp->right==NULL) {
+    temp->left->right=NULL;
+    temp->left=NULL;
+  }
+  else {
+    temp->left->right= temp->right;
+    temp->right->left= temp->left;
+    temp->left=NULL;
+    temp->right=NULL;
+  }
+
+  if(temp->numberRight==primeiroNumero) {
+    temp->right=mesa;
+    mesa=temp;
+    return 0;
+  }
+  else if (temp->numberLeft==primeiroNumero) {
+    auxI=temp->numberLeft;
+    auxII=temp->numberRight;
+    temp->numberLeft=auxII;
+    temp->numberRight=auxI;
+    temp->right=mesa;
+    mesa=temp;
+    return 0;
+  }
+
+  Node *ultimo;
+  for (ultimo=mesa; ultimo->right!=NULL; ultimo=ultimo->right);
+  if (temp->numberLeft==ultimoNumero){
+    ultimo->right=temp;
+    temp->left=ultimo;
+    return 0;
+  }
+  else if (temp->numberRight==ultimoNumero) {
+    auxI=temp->numberLeft;
+    auxII=temp->numberRight;
+    temp->numberLeft=auxII;
+    temp->numberRight=auxI;
+    ultimo->right=temp;
+    temp->left=ultimo;
+    return 0;
+  }
+  return 0;
+}
 
 
 int main() {
@@ -435,20 +510,16 @@ int main() {
         system("clear");
         printf("\nVocê Ganhou!");
         break;
-      }
-      else joga=1;
-      
+      } 
     }
 
 
     else if (joga == 1){
-      
+      joga=AI();
       if(contaLista(machineHand)==0){
         system("clear");
         printf("você perdeu!");
       }
-      else joga = 0;
-      //AI();
     }
 
   } while (1);
