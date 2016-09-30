@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-//#include <stdbool.h>
 
 struct Node{
   int numberLeft;
@@ -33,8 +32,6 @@ int contaLista (Node *lista) {
     return count;
   }
 }
-
-
 
 //usado em "criaPecas"
 Node *insereInicio (Node *pilha, int left, int right){
@@ -508,7 +505,7 @@ int main() {
       joga=jogando();
       if(contaLista(playerHand)==0){
         system("clear");
-        printf("\nVocê Ganhou!");
+        printf("\nVocê Ganhou!\n");
         break;
       } 
     }
@@ -518,7 +515,8 @@ int main() {
       joga=AI();
       if(contaLista(machineHand)==0){
         system("clear");
-        printf("você perdeu!");
+        printf("você perdeu!\n");
+        break;
       }
     }
 
